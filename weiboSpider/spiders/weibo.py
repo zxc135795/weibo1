@@ -30,53 +30,60 @@ class WeiboSpider(scrapy.Spider):
     def parse(self, response):
         # print(response.text)
         pages = response.xpath('.//ul[@class="s-scroll"]/li')
-        print(pages)
+        # print(pages)
         div = response.xpath('.//div[@class="card-wrap"]')
         print(len(div))
         num = 1
         item = WeibospiderItem()
         for v in div:
             # detail_url = v.xpath('.//div[@class="content"]/p[@class="txt"]/text()')
-            detail_urls = v.xpath('.//div[@class="content"]/p')
+            detail_urls = v.xpath('.//div[@class="content" and @node-type="like"]/p')
             pinglun = v.xpath('.//div[@class="card-act"]/ul/li')
             # print(detail_urls)
             # sheet.write(num, 0, num)
             if len(detail_urls) == 2:
                 text = detail_urls[0].xpath('./text()|./em/text()|./a/text()').extract()
                 text = ''.join(text).strip()
-                print(text)
+                name = detail_urls[0].xpath('./@nick-name')
+                if len(name) == 1:
+                    name = name[0].extract()
+                    print(name)
+                    item['id'] = name
+                # print(text)
                 item['text'] = text
                 # sheet.write(num, 1, text)
             elif len(detail_urls) > 2:
                 text = detail_urls[1].xpath('./text()|./em/text()|./a/text()').extract()
                 text = ''.join(text).strip()
-                print(text)
+                name = detail_urls[0].xpath('./@nick-name')
+                if len(name) == 1:
+                    name = name[0].extract()
+                    item['id'] = name
+                # print(text)
                 item['text'] = text
                 # sheet.write(num, 1, text)
             if len(pinglun) == 4:
                 shoucang = pinglun[0].xpath('./a/text()').extract()
                 shoucang = ''.join(shoucang)
-                print(shoucang)
+                # print(shoucang)
                 # sheet.write(num, 2, shoucang)
                 zhuanfa = pinglun[1].xpath('./a/text()').extract()
                 zhuanfa = ''.join(zhuanfa)
-                print(zhuanfa)
+                # print(zhuanfa)
                 # sheet.write(num, 3, zhuanfa)
                 pingl = pinglun[2].xpath('./a/text()').extract()
                 pingl = ''.join(pingl)
-                print(pingl)
+                # print(pingl)
                 # sheet.write(num, 4, pingl)
                 zan = pinglun[3].xpath('./a/@title|./a/em/text()').extract()
                 zan = ''.join(zan)
                 # sheet.write(num, 5, zan)
-                print(zan)
+                # print(zan)
                 item['shoucang'] = shoucang
                 item['pinglun'] = pingl
                 item['zhuanfa'] = zhuanfa
                 item['zan'] = zan
-                item['id'] = num
                 yield item
-            num += 1
 
         self.page += 1
         if len(pages) > 0 and self.page <= len(pages):
