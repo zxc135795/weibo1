@@ -33,7 +33,7 @@ class WeibospiderPipeline:
 
     def process_item(self, item, spider):  # 具体内容
 
-        line = [item['id'], item['text'], item['zhuanfa'], item['shoucang'],item['pinglun'], item['zan']]  # 把数据中项整理出来
+        line = [item['id'], item['text'], item['zhuanfa'], item['shoucang'], item['pinglun'], item['zan']]  # 把数据中项整理出来
         self.ws.append(line)  # 将数据需要保存的项以行的形式添加到xlsx中
-        self.wb.save(r'F:\pyfiles\pachong\test001\weiboSpider\weiboSpider\web.xlsx')  # 保存xlsx文件
+        self.wb.save(r'F:\pyfiles\pachong\test001\weiboSpider\weiboSpider\{}.xlsx'.format(item['key']))  # 保存xlsx文件
         return item

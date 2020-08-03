@@ -15,3 +15,4 @@ class WeibospiderItem(scrapy.Item):
     pinglun = scrapy.Field()
     zhuanfa = scrapy.Field()
     zan = scrapy.Field()
+    key = scrapy.Field()
